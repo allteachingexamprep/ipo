@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>IPO Manager Ultra</title>
+    
+    <!-- Fonts & PDF Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-gradient: linear-gradient(135deg, #4f46e5, #3730a3);
+            --accent: #06b6d4;
+            --success: #059669;
+            --success-bg: #ecfdf5;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --blue: #2563eb;
+            --blue-bg: #eff6ff;
+            --whatsapp: #25D366;
+            --whatsapp-bg: #f0fdf4;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            padding-bottom: 95px;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-card {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* टॉप ऐप हेडर */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-brand {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4338ca, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* लाइव क्लॉक विजेट */
+        .live-clock-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 10px;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .clock-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .clock-date {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .user-tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            border: 1px solid #c7d2fe;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* WhatsApp बटन */
+        .btn-whatsapp {
+            background: var(--whatsapp-bg);
+            border: 1.5px solid #86efac;
+            color: #166534;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 11.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-whatsapp:active {
+            background: var(--whatsapp);
+            color: white;
+            transform: scale(0.96);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 14px 16px;
+        }
+
+        /* यूज़र स्क्रीन */
+        #userScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 85vh;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .user-option-card {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+            width: 100%;
+            max-width: 380px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .user-option-card:active {
+            transform: scale(0.97);
+            border-color: var(--primary);
+            background: #f8faff;
+        }
+
+        .avatar-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* डैशबोर्ड स्टैट्स */
+        .stats-dashboard {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .stat-highlight {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .stat-highlight .amount {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--warning);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sub-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .sub-stat-item {
+            background: #f8fafc;
+            padding: 10px 8px;
+            border-radius: 14px;
+            border: 1px solid #edf2f7;
+        }
+
+        .sub-stat-item .title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .sub-stat-item .num {
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* फ़िल्टर चिप्स */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 2px 14px 2px;
+            scrollbar-width: none;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+
+        .chip {
+            padding: 8px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+        }
+
+        /* कार्ड */
+        .record-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .ipo-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .badge.applied { background: var(--warning-bg); color: var(--warning); border: 1px solid #fde68a; }
+        .badge.received { background: var(--success-bg); color: var(--success); border: 1px solid #a7f3d0; }
+        .badge.allotted { background: var(--blue-bg); color: var(--blue); border: 1px solid #bfdbfe; }
+
+        .card-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .quick-actions-row {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-quick-receive {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1.5px solid #a7f3d0;
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 12.5px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-quick-receive:active { background: var(--success); color: white; transform: scale(0.98); }
+
+        .btn-quick-allotted {
+            background: var(--blue-bg);
+            color: var(--blue);
+            border: 1.5px solid #bfdbfe;
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 12.5px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-quick-allotted:active { background: var(--blue); color: white; transform: scale(0.98); }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 58px;
+            height: 58px;
+            border-radius: 20px;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 8px 24px rgba(67, 56, 202, 0.4);
+            border: none;
+            cursor: pointer;
+            z-index: 99;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .fab:active { transform: scale(0.9) rotate(45deg); }
+
+        /* बॉटम शीट मोडल */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .bottom-sheet {
+            background: var(--card-bg);
+            border-radius: 26px 26px 0 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .sheet-close {
+            background: #f1f5f9;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        input, select {
+            padding: 13px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14.5px;
+            outline: none;
+            transition: 0.2s;
+            background: #f8fafc;
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .quick-amt-chip {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* बॉटम नेविगेशन बार */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .bar-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 700;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        .bar-btn.active { color: var(--primary); }
+
+        .footer {
+            text-align: center;
+            padding: 24px 0 10px 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .designer-name { font-weight: 800; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<!-- टॉप ऐप हेडर (लाइव घड़ी और WhatsApp सहित) -->
+<div class="app-header" id="appHeader" style="display: none;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="app-brand">⚡ <span>IPO Tracker</span></div>
+        <span class="user-tag" id="userBadge">User</span>
+    </div>
+
+    <!-- लाइव डिजिटल क्लॉक और तारीख -->
+    <div class="live-clock-box">
+        <span class="clock-time" id="liveClock">--:--:-- --</span>
+        <span class="clock-date" id="liveDate">-- --- ----</span>
+    </div>
+
+    <!-- WhatsApp और PDF बटन -->
+    <div style="display: flex; gap: 6px; align-items: center;">
+        <a href="https://wa.me/919140740167?text=नमस्ते%20अनुराग,%20IPO%20पोर्टफोलियो%20के%20संबंध%20में%20मैसेज%20कर%20रहा%20हूँ।" target="_blank" class="btn-whatsapp">
+            <span>💬 WhatsApp</span>
+        </a>
+        <button onclick="exportToSmartPDF()" style="background:#fee2e2; border:1px solid #fecaca; color:#dc2626; padding:6px 9px; border-radius:8px; font-weight:700; font-size:11px; cursor:pointer;">📄 PDF</button>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 1. होम / यूज़र चयन -->
+    <div id="userScreen">
+        <div style="font-size: 42px; margin-bottom: 8px;">📈</div>
+        <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 4px;">IPO Portfolio Manager</h1>
+        
+        <!-- होम स्क्रीन क्लॉक -->
+        <div style="margin-bottom: 24px; color: var(--primary); font-weight: 700; font-size: 14px;">
+            🕒 <span id="homeClock">--:--:--</span> • <span id="homeDate">-- --- ----</span>
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px;">अकाउंट चुनकर तुरंत लॉगिन करें</p>
+
+        <div class="user-option-card" onclick="openDashboard('Mamta Yadav')">
+            <div class="avatar-box" style="background: linear-gradient(135deg, #4f46e5, #7c3aed);">MY</div>
+            <div style="text-align: left;">
+                <h3 style="font-size: 17px; font-weight: 800;">Mamta Yadav</h3>
+                <span style="font-size: 12.5px; color: #4f46e5; font-weight: 600;">डैशबोर्ड खोलें &rarr;</span>
+            </div>
+        </div>
+
+        <div class="user-option-card" onclick="openDashboard('Alok')">
+            <div class="avatar-box" style="background: linear-gradient(135deg, #059669, #10b981);">AL</div>
+            <div style="text-align: left;">
+                <h3 style="font-size: 17px; font-weight: 800;">Alok</h3>
+                <span style="font-size: 12.5px; color: #059669; font-weight: 600;">डैशबोर्ड खोलें &rarr;</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <a href="https://wa.me/919140740167?text=नमस्ते%20अनुराग,%20IPO%20पोर्टफोलियो%20के%20संबंध%20में%20मैसेज%20कर%20रहा%20हूँ।" target="_blank" class="btn-whatsapp" style="padding: 8px 16px; font-size: 13px;">
+                💬 WhatsApp पर चैट करें (9140740167)
+            </a>
+        </div>
+
+        <div class="footer">Designed by <span class="designer-name">Anurag</span></div>
+    </div>
+
+    <!-- 2. मुख्य डैशबोर्ड -->
+    <div id="dashboardScreen" style="display: none;">
+        
+        <!-- क्विक समरी -->
+        <div class="stats-dashboard">
+            <div class="stat-highlight">
+                <div>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">Active Blocked (अटका पैसा)</div>
+                    <div class="amount" id="totalBlocked">₹0</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">Net Gain / Loss</div>
+                    <div id="totalProfit" style="font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono', monospace;">₹0</div>
+                </div>
+            </div>
+
+            <div class="sub-stats">
+                <div class="sub-stat-item">
+                    <div class="title">वापस मिला</div>
+                    <div class="num" id="totalReceived" style="color: var(--success);">₹0</div>
+                </div>
+                <div class="sub-stat-item">
+                    <div class="title">Allotted</div>
+                    <div class="num" id="totalAllotted" style="color: #2563eb;">₹0</div>
+                </div>
+                <div class="sub-stat-item">
+                    <div class="title">कुल IDs</div>
+                    <div class="num" id="totalApplications" style="color: var(--text-primary);">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- फ़िल्टर चिप्स -->
+        <div class="filter-bar">
+            <div class="chip active" onclick="setFilter('ALL', this)">🔥 सभी रिकॉर्ड्स</div>
+            <div class="chip" onclick="setFilter('Applied', this)">⏳ सिर्फ Applied (Due)</div>
+            <div class="chip" onclick="setFilter('Received', this)">✅ सिर्फ Received</div>
+            <div class="chip" onclick="setFilter('Allotted', this)">🎉 सिर्फ Allotted</div>
+        </div>
+
+        <!-- कार्ड्स लिस्ट -->
+        <div id="recordsContainer"></div>
+
+        <!-- समरी सेक्शन -->
+        <div id="summarySection" style="display: none; margin-top: 10px;">
+            <div style="background:white; border-radius:18px; padding:18px; border:1px solid var(--border);">
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">📊 IPO समरी व Erase</h3>
+                <div id="ipoSummaryContent"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Designed by <span class="designer-name">Anurag</span> • 
+            <a href="https://wa.me/919140740167" target="_blank" style="color:#059669; font-weight:700; text-decoration:none;">WhatsApp: 9140740167</a>
+        </div>
+    </div>
+</div>
+
+<!-- फ्लोटिंग + बटन -->
+<button class="fab" id="fabBtn" style="display: none;" onclick="openBottomSheet()">+</button>
+
+<!-- बॉटम शीट मोडल -->
+<div class="modal-overlay" id="entryModal">
+    <div class="bottom-sheet">
+        <div class="sheet-header">
+            <h3 style="font-size: 18px; font-weight: 800;">➕ नया IPO एप्लिकेशन</h3>
+            <button class="sheet-close" onclick="closeBottomSheet()">✕</button>
+        </div>
+
+        <div id="quickTags" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px;"></div>
+
+        <form id="newIpoForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>सदस्य ID</label>
+                    <select id="modalApplicant" onchange="fillPanFromSelect()" required>
+                        <option value="" disabled selected>-- ID चुनें --</option>
+                        <option value="Mamta">Mamta</option>
+                        <option value="Anurag">Anurag</option>
+                        <option value="Gudiya">Gudiya</option>
+                        <option value="Gopal">Gopal</option>
+                        <option value="Sudhir Sir">Sudhir Sir</option>
+                        <option value="Rajendra">Rajendra</option>
+                        <option value="Kiran">Kiran</option>
+                        <option value="Alok">Alok</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PAN कार्ड</label>
+                    <input type="text" id="modalPan" placeholder="Auto" readonly style="background:#f1f5f9; color:#0284c7; font-family:'JetBrains Mono',monospace; font-weight:700;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>IPO का नाम</label>
+                <input type="text" id="modalIpoName" placeholder="उदा. Tata Motors" required oninput="autoSuggestAmount(this.value)">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px;">
+                <div class="form-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>राशि (₹)</label>
+                        <div style="display:flex; gap:3px;">
+                            <span class="quick-amt-chip" onclick="setQuickAmount(14000)">14k</span>
+                            <span class="quick-amt-chip" onclick="setQuickAmount(15000)">15k</span>
+                        </div>
+                    </div>
+                    <input type="number" id="modalAmount" value="15000" placeholder="15000" required>
+                </div>
+                <div class="form-group">
+                    <label>पेमेंट माध्यम</label>
+                    <select id="modalPayment">
+                        <option value="PhonePe">PhonePe</option>
+                        <option value="GPay">GPay</option>
+                        <option value="Paytm">Paytm</option>
+                        <option value="Net Banking">Net Banking</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">सुरक्षित करें (Save)</button>
+        </form>
+    </div>
+</div>
+
+<!-- बॉटम नेविगेशन बार -->
+<div class="bottom-bar" id="bottomBar" style="display: none;">
+    <button class="bar-btn active" id="btnTabRecords" onclick="showTab('RECORDS')">
+        <span style="font-size: 18px;">📋</span>
+        <span>रिकॉर्ड्स</span>
+    </button>
+    <button class="bar-btn" id="btnTabSummary" onclick="showTab('SUMMARY')">
+        <span style="font-size: 18px;">📊</span>
+        <span>समरी</span>
+    </button>
+    <button class="bar-btn" onclick="exitToUsers()">
+        <span style="font-size: 18px;">🔄</span>
+        <span>यूज़र बदलें</span>
+    </button>
+</div>
+
+<script>
+    // लाइव वर्किंग घड़ी और डेट
+    function updateClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' });
+
+        const headerClock = document.getElementById('liveClock');
+        const headerDate = document.getElementById('liveDate');
+        const homeClock = document.getElementById('homeClock');
+        const homeDate = document.getElementById('homeDate');
+
+        if (headerClock) headerClock.textContent = timeStr;
+        if (headerDate) headerDate.textContent = dateStr;
+        if (homeClock) homeClock.textContent = timeStr;
+        if (homeDate) homeDate.textContent = dateStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const panMap = {
+        "Mamta": "ASEPY9019P",
+        "Anurag": "CGTPA3356A",
+        "Gudiya": "BPTPY6035G",
+        "Gopal": "ADFPY7745Q",
+        "Sudhir Sir": "BLTPK5660D",
+        "Rajendra": "AMBPY1128N",
+        "Kiran": "JULPK7543G",
+        "Alok": "BKIPA4589K"
+    };
+
+    let currentUser = null;
+    let currentFilter = 'ALL';
+    let db = JSON.parse(localStorage.getItem('ipo_db_ultra')) || { "Mamta Yadav": [], "Alok": [] };
+
+    function openDashboard(userName) {
+        currentUser = userName;
+        if (!db[currentUser]) db[currentUser] = [];
+
+        document.getElementById('userScreen').style.display = 'none';
+        document.getElementById('dashboardScreen').style.display = 'block';
+        document.getElementById('appHeader').style.display = 'flex';
+        document.getElementById('bottomBar').style.display = 'flex';
+        document.getElementById('fabBtn').style.display = 'flex';
+        document.getElementById('userBadge').textContent = currentUser;
+
+        showTab('RECORDS');
+        refreshApp();
+    }
+
+    function exitToUsers() {
+        currentUser = null;
+        document.getElementById('dashboardScreen').style.display = 'none';
+        document.getElementById('appHeader').style.display = 'none';
+        document.getElementById('bottomBar').style.display = 'none';
+        document.getElementById('fabBtn').style.display = 'none';
+        document.getElementById('userScreen').style.display = 'flex';
+    }
+
+    function setFilter(filterType, element) {
+        currentFilter = filterType;
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        element.classList.add('active');
+        renderRecords();
+    }
+
+    function showTab(tab) {
+        document.getElementById('recordsContainer').style.display = tab === 'RECORDS' ? 'block' : 'none';
+        document.querySelector('.filter-bar').style.display = tab === 'RECORDS' ? 'flex' : 'none';
+        document.getElementById('summarySection').style.display = tab === 'SUMMARY' ? 'block' : 'none';
+
+        document.getElementById('btnTabRecords').classList.toggle('active', tab === 'RECORDS');
+        document.getElementById('btnTabSummary').classList.toggle('active', tab === 'SUMMARY');
+
+        if (tab === 'SUMMARY') renderSummaryTable();
+    }
+
+    function fillPanFromSelect() {
+        const val = document.getElementById('modalApplicant').value;
+        document.getElementById('modalPan').value = panMap[val] || '';
+    }
+
+    function autoSuggestAmount(ipoName) {
+        const trimmed = ipoName.trim().toLowerCase();
+        if (!trimmed) {
+            document.getElementById('modalAmount').value = "15000";
+            return;
+        }
+        const match = (db[currentUser] || []).find(r => r.ipoName.toLowerCase() === trimmed);
+        if (match && match.amount) {
+            document.getElementById('modalAmount').value = match.amount;
+        } else {
+            document.getElementById('modalAmount').value = "15000";
+        }
+    }
+
+    function setQuickAmount(amt) {
+        document.getElementById('modalAmount').value = amt;
+    }
+
+    function refreshApp() {
+        updateStats();
+        renderRecords();
+        updateQuickTags();
+        saveDb();
+    }
+
+    function updateStats() {
+        let blocked = 0, received = 0, allotted = 0, profit = 0;
+        const list = db[currentUser] || [];
+
+        list.forEach(r => {
+            const amt = Number(r.amount) || 0;
+            const pnl = Number(r.pnl) || 0;
+            if (r.status === 'Applied') blocked += amt;
+            else if (r.status === 'Received') received += amt;
+            else if (r.status === 'Allotted') {
+                allotted += amt;
+                profit += pnl;
+            }
+        });
+
+        document.getElementById('totalBlocked').textContent = '₹' + blocked.toLocaleString('en-IN');
+        document.getElementById('totalReceived').textContent = '₹' + received.toLocaleString('en-IN');
+        document.getElementById('totalAllotted').textContent = '₹' + allotted.toLocaleString('en-IN');
+        document.getElementById('totalApplications').textContent = list.length;
+
+        const pnlEl = document.getElementById('totalProfit');
+        pnlEl.textContent = (profit >= 0 ? '+₹' : '-₹') + Math.abs(profit).toLocaleString('en-IN');
+        pnlEl.style.color = profit >= 0 ? 'var(--success)' : 'var(--danger)';
+    }
+
+    function renderRecords() {
+        const container = document.getElementById('recordsContainer');
+        container.innerHTML = '';
+        const list = db[currentUser] || [];
+
+        const filtered = list.filter(r => {
+            if (currentFilter === 'ALL') return true;
+            return r.status === currentFilter;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 40px 16px; color: var(--text-secondary);">
+                    <div style="font-size:36px; margin-bottom:8px;">🔍</div>
+                    <p style="font-weight:600;">कोई रिकॉर्ड नहीं मिला</p>
+                    <small>नीचे दिए गए <strong>+</strong> बटन से नया IPO जोड़ें</small>
+                </div>`;
+            return;
+        }
+
+        filtered.forEach((r) => {
+            const originalIndex = list.indexOf(r);
+            let badgeClass = 'applied';
+            if (r.status === 'Received') badgeClass = 'received';
+            if (r.status === 'Allotted') badgeClass = 'allotted';
+
+            const card = document.createElement('div');
+            card.className = 'record-card animate-card';
+            card.innerHTML = `
+                <div class="card-top">
+                    <div>
+                        <div class="ipo-title">${r.ipoName}</div>
+                        <div style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">${r.dateTime}</div>
+                    </div>
+                    <span class="badge ${badgeClass}">${r.status}</span>
+                </div>
+
+                <div class="card-info-grid">
+                    <div>
+                        <div class="info-label">सदस्य ID</div>
+                        <div class="info-value">${r.applicantName}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">PAN नंबर</div>
+                        <div class="info-value" style="color:#0284c7; font-family:'JetBrains Mono',monospace;">${r.panNumber}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">राशि Blocked</div>
+                        <div class="info-value">₹${Number(r.amount).toLocaleString('en-IN')}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">पेमेंट ऐप</div>
+                        <div class="info-value">${r.paymentMethod}</div>
+                    </div>
+                    <div style="grid-column: span 2; font-size:12px; color:var(--text-secondary);">
+                        <strong>Done Date:</strong> ${r.doneDate || 'पेंडिंग (पैसा ब्लॉक है)'}
+                        ${r.status === 'Allotted' ? `<span style="margin-left:10px; font-weight:700; color:${(r.pnl||0)>=0?'var(--success)':'var(--danger)'};">| लाभ/हानि: ${(r.pnl||0)>=0?'+':''}₹${r.pnl||0}</span>` : ''}
+                    </div>
+                </div>
+
+                <!-- Applied होने पर दोनों क्विक एक्शन बटन -->
+                ${r.status === 'Applied' ? `
+                    <div class="quick-actions-row">
+                        <button class="btn-quick-receive" onclick="instantReceive(${originalIndex})">
+                            ⚡ पैसे वापस मिले
+                        </button>
+                        <button class="btn-quick-allotted" onclick="instantAllotted(${originalIndex})">
+                            🎉 Allotted (मिले)
+                        </button>
+                    </div>
+                ` : ''}
+
+                <div class="card-footer">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:12px; color:var(--text-secondary);">बदलें:</span>
+                        <select onchange="updateRecordStatus(${originalIndex}, this.value)" style="padding:4px 8px; font-size:12px; border-radius:8px;">
+                            <option value="Applied" ${r.status === 'Applied' ? 'selected' : ''}>Applied</option>
+                            <option value="Received" ${r.status === 'Received' ? 'selected' : ''}>Received</option>
+                            <option value="Allotted" ${r.status === 'Allotted' ? 'selected' : ''}>Allotted</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${r.status === 'Allotted' ? `
+                            <input type="number" value="${r.pnl || 0}" placeholder="P&L" onchange="updatePnl(${originalIndex}, this.value)" style="width:75px; padding:4px 6px; font-size:12px; border-radius:6px; text-align:right;">
+                        ` : ''}
+                        <button onclick="deleteRecord(${originalIndex})" style="background:#fee2e2; border:none; color:#dc2626; padding:5px 8px; border-radius:6px; font-size:11.5px; font-weight:700; cursor:pointer;">हटाएं</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function instantReceive(idx) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        db[currentUser][idx].status = 'Received';
+        db[currentUser][idx].doneDate = `${dateStr}, ${timeStr}`;
+        refreshApp();
+    }
+
+    function instantAllotted(idx) {
+        const profitInput = prompt("बधाई हो! इस IPO में कितना लाभ (Profit ₹) या हानि (-₹) हुआ दर्ज करें:", "0");
+        if (profitInput === null) return;
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        db[currentUser][idx].status = 'Allotted';
+        db[currentUser][idx].doneDate = `${dateStr}, ${timeStr}`;
+        db[currentUser][idx].pnl = Number(profitInput) || 0;
+        refreshApp();
+    }
+
+    function updateRecordStatus(idx, newStatus) {
+        db[currentUser][idx].status = newStatus;
+        if (newStatus === 'Received' || newStatus === 'Allotted') {
+            const now = new Date();
+            db[currentUser][idx].doneDate = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}, ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+            if (newStatus === 'Allotted' && !db[currentUser][idx].pnl) {
+                const profitInput = prompt("इस Allotted IPO का लाभ/हानि (Profit ₹) दर्ज करें:", "0");
+                if (profitInput !== null) db[currentUser][idx].pnl = Number(profitInput) || 0;
+            }
+        } else {
+            db[currentUser][idx].doneDate = null;
+        }
+        refreshApp();
+    }
+
+    function updatePnl(idx, val) {
+        db[currentUser][idx].pnl = Number(val) || 0;
+        refreshApp();
+    }
+
+    function deleteRecord(idx) {
+        if (confirm('क्या आप वाकई इस एंट्री को हटाना चाहते हैं?')) {
+            db[currentUser].splice(idx, 1);
+            refreshApp();
+        }
+    }
+
+    function eraseIpoEntirely(ipoName) {
+        if (confirm(`⚠️ "${ipoName}" का पूरा डेटा साफ़ करना चाहते हैं?`)) {
+            db[currentUser] = db[currentUser].filter(r => r.ipoName.toLowerCase() !== ipoName.toLowerCase());
+            refreshApp();
+            renderSummaryTable();
+        }
+    }
+
+    function renderSummaryTable() {
+        const container = document.getElementById('ipoSummaryContent');
+        const list = db[currentUser] || [];
+        const ipoWise = {};
+
+        list.forEach(r => {
+            const name = r.ipoName.trim();
+            const amt = Number(r.amount) || 0;
+            const pnl = Number(r.pnl) || 0;
+            if (!ipoWise[name]) ipoWise[name] = { count: 0, total: 0, pnl: 0 };
+            ipoWise[name].count += 1;
+            ipoWise[name].total += amt;
+            if (r.status === 'Allotted') ipoWise[name].pnl += pnl;
+        });
+
+        const keys = Object.keys(ipoWise);
+        if (keys.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:var(--text-secondary); padding:20px;">कोई डेटा उपलब्ध नहीं है।</p>`;
+            return;
+        }
+
+        let html = '<div style="display:flex; flex-direction:column; gap:10px;">';
+        keys.forEach(k => {
+            const item = ipoWise[k];
+            html += `
+                <div style="background:#f8fafc; padding:12px 14px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="font-size:14.5px;">${k}</strong>
+                        <div style="font-size:12px; color:var(--text-secondary);">${item.count} IDs • ₹${item.total.toLocaleString('en-IN')}</div>
+                        <div style="font-size:12px; font-weight:700; color:${item.pnl>=0?'var(--success)':'var(--danger)'};">Profit: ${item.pnl>=0?'+':''}₹${item.pnl.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <button onclick="eraseIpoEntirely('${k}')" style="background:#fee2e2; color:#dc2626; border:1px solid #fecaca; padding:6px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">🗑️ सारा हटाएं</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function updateQuickTags() {
+        const wrap = document.getElementById('quickTags');
+        wrap.innerHTML = '';
+        const list = db[currentUser] || [];
+        const unique = [...new Set(list.map(r => r.ipoName))];
+
+        unique.forEach(name => {
+            const tag = document.createElement('span');
+            tag.style.cssText = "background:#e0e7ff; color:#4338ca; padding:4px 10px; border-radius:20px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;";
+            tag.textContent = `+ ${name}`;
+            tag.onclick = () => {
+                document.getElementById('modalIpoName').value = name;
+                autoSuggestAmount(name);
+            };
+            wrap.appendChild(tag);
+        });
+    }
+
+    function openBottomSheet() {
+        document.getElementById('entryModal').style.display = 'flex';
+        document.getElementById('modalAmount').value = "15000";
+    }
+
+    function closeBottomSheet() {
+        document.getElementById('entryModal').style.display = 'none';
+        document.getElementById('newIpoForm').reset();
+        document.getElementById('modalPan').value = '';
+        document.getElementById('modalAmount').value = "15000";
+    }
+
+    document.getElementById('newIpoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        const record = {
+            id: Date.now(),
+            dateTime: `${dateStr}, ${timeStr}`,
+            applicantName: document.getElementById('modalApplicant').value,
+            panNumber: document.getElementById('modalPan').value,
+            ipoName: document.getElementById('modalIpoName').value.trim(),
+            amount: document.getElementById('modalAmount').value.trim() || 15000,
+            paymentMethod: document.getElementById('modalPayment').value,
+            status: 'Applied',
+            doneDate: null,
+            pnl: 0
+        };
+
+        db[currentUser].unshift(record);
+        refreshApp();
+        closeBottomSheet();
+    });
+
+    function saveDb() {
+        localStorage.setItem('ipo_db_ultra', JSON.stringify(db));
+    }
+
+    // स्मार्ट मल्टी-पेज PDF
+    function exportToSmartPDF() {
+        const list = db[currentUser] || [];
+        if (list.length === 0) return alert('PDF के लिए कोई डेटा नहीं है!');
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'pt', 'a4');
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+
+        const addFooter = (p, total) => {
+            doc.setFontSize(9);
+            doc.setTextColor(120);
+            doc.text(`Designed by Anurag  •  WhatsApp: +91 9140740167  •  IPO Statement (${currentUser})`, 40, pageHeight - 25);
+            doc.text(`Page ${p} of ${total}`, pageWidth - 80, pageHeight - 25);
+        };
+
+        // Page 1: Portfolio Summary
+        doc.setFontSize(18);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`IPO Portfolio Summary - ${currentUser}`, 40, 48);
+
+        doc.setFontSize(9.5);
+        doc.setTextColor(100);
+        doc.text(`Generated on: ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})}`, 40, 65);
+
+        const ipoWise = {};
+        list.forEach(r => {
+            const name = r.ipoName.trim();
+            if (!ipoWise[name]) ipoWise[name] = { count: 0, total: 0, received: 0, pnl: 0, records: [] };
+            ipoWise[name].count += 1;
+            ipoWise[name].total += Number(r.amount) || 0;
+            if (r.status === 'Received') ipoWise[name].received += Number(r.amount) || 0;
+            if (r.status === 'Allotted') ipoWise[name].pnl += Number(r.pnl) || 0;
+            ipoWise[name].records.push(r);
+        });
+
+        const summaryData = Object.keys(ipoWise).map(k => [
+            k,
+            `${ipoWise[k].count} IDs`,
+            `Rs. ${ipoWise[k].total.toLocaleString('en-IN')}`,
+            `Rs. ${ipoWise[k].received.toLocaleString('en-IN')}`,
+            (ipoWise[k].pnl >= 0 ? `+` : ``) + `Rs. ${ipoWise[k].pnl.toLocaleString('en-IN')}`
+        ]);
+
+        doc.autoTable({
+            head: [['IPO Name', 'Total IDs', 'Total Blocked', 'Received (Cleared)', 'Net P&L']],
+            body: summaryData,
+            startY: 85,
+            theme: 'grid',
+            headStyles: { fillColor: [67, 56, 202] }
+        });
+
+        // Page 2 onwards
+        Object.keys(ipoWise).forEach(k => {
+            doc.addPage();
+            doc.setFontSize(16);
+            doc.text(`IPO Details: ${k}`, 40, 48);
+
+            const rows = ipoWise[k].records.map(r => [
+                r.dateTime,
+                r.applicantName,
+                r.panNumber,
+                `Rs. ${Number(r.amount).toLocaleString('en-IN')}`,
+                r.paymentMethod,
+                r.status,
+                r.doneDate || 'Pending',
+                r.status === 'Allotted' ? (r.pnl >= 0 ? `+Rs. ${r.pnl}` : `-Rs. ${Math.abs(r.pnl)}`) : '-'
+            ]);
+
+            doc.autoTable({
+                head: [['Applied Date', 'Name', 'PAN', 'Amount', 'Payment App', 'Status', 'Done Date & Time', 'Profit/Loss']],
+                body: rows,
+                startY: 65,
+                theme: 'striped',
+                headStyles: { fillColor: [30, 41, 59] },
+                columnStyles: {
+                    6: { cellWidth: 90 },
+                    7: { fontStyle: 'bold', halign: 'right' }
+                }
+            });
+        });
+
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            doc.setPage(i);
+            addFooter(i, totalPages);
+        }
+
+        doc.save(`IPO_Statement_${currentUser}_${new Date().toISOString().slice(0,10)}.pdf`);
+    }
+</script>
+</body>
+</html>
