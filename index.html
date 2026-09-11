@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IPO Manager</title>
+    <title>IPO Manager Ultra + Analog Clock</title>
     
     <!-- Fonts & PDF Libraries -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -22,6 +22,8 @@
             --danger-bg: #fef2f2;
             --blue: #2563eb;
             --blue-bg: #eff6ff;
+            --gmp: #7c3aed;
+            --gmp-bg: #f5f3ff;
             --whatsapp: #25D366;
             --whatsapp-bg: #f0fdf4;
             --bg: #f8fafc;
@@ -52,14 +54,14 @@
             min-height: 100vh;
         }
 
-        /* मोबाइल हेडर (2 रो लेआउट) */
+        /* मोबाइल हेडर */
         .app-header {
             position: sticky;
             top: 0;
             z-index: 100;
             background: #ffffff;
             border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
+            padding: 10px 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
@@ -107,47 +109,126 @@
             justify-content: space-between;
             align-items: center;
             background: #f1f5f9;
-            padding: 8px 12px;
-            border-radius: 12px;
-        }
-
-        .clock-box {
-            display: flex;
-            align-items: baseline;
+            padding: 6px 12px;
+            border-radius: 14px;
             gap: 8px;
         }
 
-        .clock-time {
+        /* एनालॉग क्लॉक बॉक्स */
+        .clock-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analog-clock {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            position: relative;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+            flex-shrink: 0;
+        }
+
+        .analog-clock::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #dc2626;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 4px;
+        }
+
+        .hour-hand {
+            width: 2.5px;
+            height: 10px;
+            background: #1e293b;
+            margin-left: -1.25px;
+        }
+
+        .minute-hand {
+            width: 1.8px;
+            height: 14px;
+            background: var(--primary);
+            margin-left: -0.9px;
+        }
+
+        .second-hand {
+            width: 1px;
+            height: 16px;
+            background: #dc2626;
+            margin-left: -0.5px;
+        }
+
+        .date-display {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .digital-time-sub {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--primary);
         }
 
         .clock-date {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-top-gmp {
+            background: var(--gmp-bg);
+            border: 1px solid #ddd6fe;
+            color: var(--gmp);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .btn-pdf {
             background: #fee2e2;
             border: 1px solid #fecaca;
             color: #dc2626;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 12.5px;
+            font-size: 12px;
             cursor: pointer;
         }
 
-        /* मुख्य कंटेनर */
         .container {
             width: 100%;
             padding: 14px;
         }
 
-        /* 1. होम / यूज़र चयन */
+        /* होम स्क्रीन */
         #userScreen {
             display: flex;
             flex-direction: column;
@@ -245,7 +326,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* फ़िल्टर बार (बड़ी और टच-फ्रेंडली चिप्स) */
+        /* फ़िल्टर बार */
         .filter-bar {
             display: flex;
             gap: 10px;
@@ -291,10 +372,31 @@
             margin-bottom: 12px;
         }
 
+        .ipo-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .ipo-title {
             font-size: 18px;
             font-weight: 800;
             color: var(--text-primary);
+        }
+
+        .btn-card-gmp {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--gmp-bg);
+            color: var(--gmp);
+            border: 1px solid #ddd6fe;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-decoration: none;
+            width: fit-content;
         }
 
         .badge {
@@ -331,7 +433,6 @@
             margin-top: 3px;
         }
 
-        /* क्विक एक्शन बटन */
         .quick-actions-row {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
@@ -380,7 +481,7 @@
             border-top: 1px solid #f1f5f9;
         }
 
-        /* FAB (+ बटन) */
+        /* FAB */
         .fab {
             position: fixed;
             bottom: 85px;
@@ -402,7 +503,7 @@
         }
         .fab:active { transform: scale(0.92); }
 
-        /* बॉटम शीट मोडल */
+        /* बॉटम शीट */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -443,6 +544,36 @@
             cursor: pointer;
         }
 
+        .member-chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+            margin-bottom: 12px;
+        }
+
+        .member-select-chip {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.15s;
+        }
+
+        .member-select-chip.selected {
+            background: #e0e7ff;
+            color: #4338ca;
+            border-color: #6366f1;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.2);
+        }
+
         .form-group {
             margin-bottom: 14px;
             display: flex;
@@ -460,7 +591,7 @@
             padding: 14px 16px;
             border: 1.5px solid var(--border);
             border-radius: 12px;
-            font-size: 16px; /* 16px से iOS/Android ज़ूम नहीं होता */
+            font-size: 16px;
             outline: none;
             background: #f8fafc;
             color: var(--text-primary);
@@ -547,22 +678,46 @@
     </div>
     
     <div class="header-bottom">
-        <div class="clock-box">
-            <span class="clock-time" id="liveClock">--:--:--</span>
-            <span class="clock-date" id="liveDate">-- --- ----</span>
+        <!-- लाइव एनालॉग क्लॉक विजेट -->
+        <div class="clock-container">
+            <div class="analog-clock">
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minHand"></div>
+                <div class="hand second-hand" id="secHand"></div>
+            </div>
+            <div class="date-display">
+                <span class="digital-time-sub" id="liveDigitalTime">--:--:--</span>
+                <span class="clock-date" id="liveDate">-- --- ----</span>
+            </div>
         </div>
-        <button class="btn-pdf" onclick="exportToSmartPDF()">📄 Download PDF</button>
+
+        <div class="header-actions">
+            <!-- IPOGyani होम पेज लिंक -->
+            <a href="https://ipogyani.com/" target="_blank" class="btn-top-gmp">
+                🔥 IPOGyani
+            </a>
+            <button class="btn-pdf" onclick="exportToSmartPDF()">📄 PDF</button>
+        </div>
     </div>
 </div>
 
 <div class="container">
-    <!-- 1. होम / यूज़र चयन -->
+    <!-- 1. होम स्क्रीन -->
     <div id="userScreen">
         <div style="font-size: 48px; margin-bottom: 8px;">📈</div>
-        <h1 style="font-size: 26px; font-weight: 800; margin-bottom: 4px;">IPO Manager</h1>
+        <h1 style="font-size: 26px; font-weight: 800; margin-bottom: 6px;">IPO Manager</h1>
         
-        <div style="margin-bottom: 24px; color: var(--primary); font-weight: 700; font-size: 15px;">
-            🕒 <span id="homeClock">--:--:--</span> • <span id="homeDate">-- --- ----</span>
+        <!-- होम स्क्रीन क्लॉक -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px;">
+            <div class="analog-clock" style="width: 44px; height: 44px;">
+                <div class="hand hour-hand" id="homeHourHand" style="height: 12px;"></div>
+                <div class="hand minute-hand" id="homeMinHand" style="height: 16px;"></div>
+                <div class="hand second-hand" id="homeSecHand" style="height: 18px;"></div>
+            </div>
+            <div style="text-align: left;">
+                <div style="font-size: 15px; font-weight: 800; color: var(--primary);" id="homeDigitalTime">--:--:--</div>
+                <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary);" id="homeDate">-- --- ----</div>
+            </div>
         </div>
 
         <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px;">अकाउंट चुनकर तुरंत लॉगिन करें</p>
@@ -583,7 +738,11 @@
             </div>
         </div>
 
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 15px; display:flex; flex-direction:column; gap:10px; align-items:center;">
+            <!-- IPOGyani होम पेज लिंक -->
+            <a href="https://ipogyani.com/" target="_blank" class="btn-top-gmp" style="padding: 10px 18px; font-size: 14px;">
+                🔥 IPOGyani.com होम पेज खोलें
+            </a>
             <a href="https://wa.me/919140740167?text=नमस्ते%20अनुराग,%20IPO%20पोर्टफोलियो%20के%20संबंध%20में%20मैसेज%20कर%20रहा%20हूँ।" target="_blank" class="btn-whatsapp" style="padding: 10px 18px; font-size: 14px;">
                 💬 WhatsApp: 9140740167
             </a>
@@ -657,40 +816,30 @@
 <div class="modal-overlay" id="entryModal">
     <div class="bottom-sheet">
         <div class="sheet-header">
-            <h3 style="font-size: 19px; font-weight: 800;">➕ नया IPO एप्लिकेशन</h3>
+            <h3 style="font-size: 19px; font-weight: 800;">➕ IPO एप्लिकेशन जोड़ें</h3>
             <button class="sheet-close" onclick="closeBottomSheet()">✕</button>
         </div>
 
         <div id="quickTags" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px;"></div>
 
         <form id="newIpoForm">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group">
-                    <label>सदस्य ID</label>
-                    <select id="modalApplicant" onchange="fillPanFromSelect()" required>
-                        <option value="" disabled selected>-- ID चुनें --</option>
-                        <option value="Mamta">Mamta</option>
-                        <option value="Anurag">Anurag</option>
-                        <option value="Gudiya">Gudiya</option>
-                        <option value="Gopal">Gopal</option>
-                        <option value="Sudhir Sir">Sudhir Sir</option>
-                        <option value="Rajendra">Rajendra</option>
-                        <option value="Kiran">Kiran</option>
-                        <option value="Alok">Alok</option>
-                    </select>
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>किन-किन लोगों की ID से लगाया? (चुनें)</label>
+                    <span style="font-size: 12px; color: var(--primary); font-weight: 700; cursor: pointer;" onclick="toggleSelectAllMembers()">सबको चुनें (All)</span>
                 </div>
-                <div class="form-group">
-                    <label>PAN कार्ड</label>
-                    <input type="text" id="modalPan" placeholder="Auto" readonly style="background:#f1f5f9; color:#0284c7; font-family:'JetBrains Mono',monospace; font-weight:700;">
-                </div>
+                <div class="member-chips-container" id="memberChipsGroup"></div>
             </div>
 
             <div class="form-group">
-                <label>IPO का नाम</label>
-                <input type="text" id="modalIpoName" placeholder="उदा. Tata Motors" required oninput="autoSuggestAmount(this.value)">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>IPO का नाम</label>
+                    <span style="font-size: 12px; color: var(--gmp); font-weight: 700; cursor: pointer;" onclick="window.open('https://ipogyani.com/', '_blank')">🔍 IPOGyani.com खोलें</span>
+                </div>
+                <input type="text" id="modalIpoName" placeholder="उदा. Tata Tech" required oninput="autoSuggestAmount(this.value)">
             </div>
 
-            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <label>राशि (₹)</label>
@@ -702,22 +851,27 @@
                     <input type="number" id="modalAmount" value="15000" placeholder="15000" required>
                 </div>
                 <div class="form-group">
-                    <label>पेमेंट माध्यम</label>
-                    <select id="modalPayment">
-                        <option value="PhonePe">PhonePe</option>
-                        <option value="GPay">GPay</option>
-                        <option value="Paytm">Paytm</option>
-                        <option value="Net Banking">Net Banking</option>
-                    </select>
+                    <label>अनुमानित GMP (₹)</label>
+                    <input type="number" id="modalGmp" placeholder="उदा. 80 या 5000">
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">सुरक्षित करें (Save)</button>
+            <div class="form-group">
+                <label>पेमेंट माध्यम</label>
+                <select id="modalPayment">
+                    <option value="PhonePe">PhonePe</option>
+                    <option value="GPay">GPay</option>
+                    <option value="Paytm">Paytm</option>
+                    <option value="Net Banking">Net Banking</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmitForm">एक साथ रिकॉर्ड जोड़ें (Save)</button>
         </form>
     </div>
 </div>
 
-<!-- बॉटम नेविगेशन बार -->
+<!-- बॉटम बार -->
 <div class="bottom-bar" id="bottomBar" style="display: none;">
     <button class="bar-btn active" id="btnTabRecords" onclick="showTab('RECORDS')">
         <span style="font-size: 20px;">📋</span>
@@ -734,23 +888,49 @@
 </div>
 
 <script>
-    function updateClock() {
+    // लाइव एनालॉग और डिजिटल क्लॉक इंजन
+    function updateAnalogClock() {
         const now = new Date();
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        const hours = now.getHours();
+
+        const secDeg = (seconds / 60) * 360;
+        const minDeg = ((minutes + seconds / 60) / 60) * 360;
+        const hourDeg = ((hours % 12 + minutes / 60) / 12) * 360;
+
+        // हेडर क्लॉक सुइयां
+        const secHand = document.getElementById('secHand');
+        const minHand = document.getElementById('minHand');
+        const hourHand = document.getElementById('hourHand');
+        if (secHand) secHand.style.transform = `rotate(${secDeg}deg)`;
+        if (minHand) minHand.style.transform = `rotate(${minDeg}deg)`;
+        if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+        // होम स्क्रीन क्लॉक सुइयां
+        const homeSecHand = document.getElementById('homeSecHand');
+        const homeMinHand = document.getElementById('homeMinHand');
+        const homeHourHand = document.getElementById('homeHourHand');
+        if (homeSecHand) homeSecHand.style.transform = `rotate(${secDeg}deg)`;
+        if (homeMinHand) homeMinHand.style.transform = `rotate(${minDeg}deg)`;
+        if (homeHourHand) homeHourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+        // डिजिटल टाइम और डेट स्ट्रिंग
         const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
         const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', weekday: 'short' });
 
-        const headerClock = document.getElementById('liveClock');
-        const headerDate = document.getElementById('liveDate');
-        const homeClock = document.getElementById('homeClock');
+        const liveDigitalTime = document.getElementById('liveDigitalTime');
+        const liveDate = document.getElementById('liveDate');
+        const homeDigitalTime = document.getElementById('homeDigitalTime');
         const homeDate = document.getElementById('homeDate');
 
-        if (headerClock) headerClock.textContent = timeStr;
-        if (headerDate) headerDate.textContent = dateStr;
-        if (homeClock) homeClock.textContent = timeStr;
+        if (liveDigitalTime) liveDigitalTime.textContent = timeStr;
+        if (liveDate) liveDate.textContent = dateStr;
+        if (homeDigitalTime) homeDigitalTime.textContent = timeStr;
         if (homeDate) homeDate.textContent = dateStr;
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(updateAnalogClock, 1000);
+    updateAnalogClock();
 
     const panMap = {
         "Mamta": "ASEPY9019P",
@@ -763,9 +943,52 @@
         "Alok": "BKIPA4589K"
     };
 
+    const allMemberList = ["Mamta", "Anurag", "Gudiya", "Gopal", "Sudhir Sir", "Rajendra", "Kiran", "Alok"];
+    let selectedMembers = [];
+
     let currentUser = null;
     let currentFilter = 'ALL';
-    let db = JSON.parse(localStorage.getItem('ipo_db_ultra')) || { "Mamta Yadav": [], "Alok": [] };
+    let db = JSON.parse(localStorage.getItem('ipo_db_ultra_gmp')) || { "Mamta Yadav": [], "Alok": [] };
+
+    function renderMemberChips() {
+        const container = document.getElementById('memberChipsGroup');
+        container.innerHTML = '';
+        allMemberList.forEach(name => {
+            const chip = document.createElement('div');
+            chip.className = 'member-select-chip' + (selectedMembers.includes(name) ? ' selected' : '');
+            chip.innerHTML = `<span>${name}</span> ${selectedMembers.includes(name) ? '✓' : '+'}`;
+            chip.onclick = () => toggleMemberSelect(name);
+            container.appendChild(chip);
+        });
+        updateSubmitButtonText();
+    }
+
+    function toggleMemberSelect(name) {
+        if (selectedMembers.includes(name)) {
+            selectedMembers = selectedMembers.filter(m => m !== name);
+        } else {
+            selectedMembers.push(name);
+        }
+        renderMemberChips();
+    }
+
+    function toggleSelectAllMembers() {
+        if (selectedMembers.length === allMemberList.length) {
+            selectedMembers = [];
+        } else {
+            selectedMembers = [...allMemberList];
+        }
+        renderMemberChips();
+    }
+
+    function updateSubmitButtonText() {
+        const btn = document.getElementById('btnSubmitForm');
+        if (selectedMembers.length > 0) {
+            btn.textContent = `एक साथ (${selectedMembers.length}) लोगों का IPO जोड़ें`;
+        } else {
+            btn.textContent = `कम से कम 1 सदस्य चुनें`;
+        }
+    }
 
     function openDashboard(userName) {
         currentUser = userName;
@@ -809,11 +1032,6 @@
         if (tab === 'SUMMARY') renderSummaryTable();
     }
 
-    function fillPanFromSelect() {
-        const val = document.getElementById('modalApplicant').value;
-        document.getElementById('modalPan').value = panMap[val] || '';
-    }
-
     function autoSuggestAmount(ipoName) {
         const trimmed = ipoName.trim().toLowerCase();
         if (!trimmed) {
@@ -823,6 +1041,7 @@
         const match = (db[currentUser] || []).find(r => r.ipoName.toLowerCase() === trimmed);
         if (match && match.amount) {
             document.getElementById('modalAmount').value = match.amount;
+            if (match.gmp) document.getElementById('modalGmp').value = match.gmp;
         } else {
             document.getElementById('modalAmount').value = "15000";
         }
@@ -894,8 +1113,12 @@
             card.className = 'record-card';
             card.innerHTML = `
                 <div class="card-top">
-                    <div>
+                    <div class="ipo-title-wrap">
                         <div class="ipo-title">${r.ipoName}</div>
+                        <!-- IPOGyani होम पेज लिंक -->
+                        <a href="https://ipogyani.com/" target="_blank" class="btn-card-gmp">
+                            📈 IPOGyani Live GMP ↗
+                        </a>
                         <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">${r.dateTime}</div>
                     </div>
                     <span class="badge ${badgeClass}">${r.status}</span>
@@ -920,7 +1143,7 @@
                     </div>
                     <div style="grid-column: span 2; font-size:13px; color:var(--text-secondary);">
                         <strong>Done Date:</strong> ${r.doneDate || 'पेंडिंग (पैसा ब्लॉक है)'}
-                        ${r.status === 'Allotted' ? `<span style="margin-left:10px; font-weight:700; color:${(r.pnl||0)>=0?'var(--success)':'var(--danger)'};">| लाभ/हानि: ${(r.pnl||0)>=0?'+':''}₹${r.pnl||0}</span>` : ''}
+                        ${r.status === 'Allotted' ? `<span style="margin-left:10px; font-weight:700; color:${(r.pnl||0)>=0?'var(--success)':'var(--danger)'};">| लाभ: ${(r.pnl||0)>=0?'+':''}₹${r.pnl||0}</span>` : ''}
                     </div>
                 </div>
 
@@ -968,7 +1191,13 @@
     }
 
     function instantAllotted(idx) {
-        const profitInput = prompt("बधाई हो! इस IPO में कितना लाभ (Profit ₹) या हानि (-₹) हुआ दर्ज करें:", "0");
+        const record = db[currentUser][idx];
+        const defaultGain = record.gmp ? Number(record.gmp) : 0;
+        const promptText = defaultGain > 0 
+            ? `बधाई हो! अनुमानित GMP ₹${defaultGain} था। कुल लाभ (Profit ₹) दर्ज करें:` 
+            : `बधाई हो! इस IPO में कितना लाभ (Profit ₹) या हानि (-₹) हुआ दर्ज करें:`;
+
+        const profitInput = prompt(promptText, defaultGain || "0");
         if (profitInput === null) return;
 
         const now = new Date();
@@ -1078,42 +1307,58 @@
     function openBottomSheet() {
         document.getElementById('entryModal').style.display = 'flex';
         document.getElementById('modalAmount').value = "15000";
+        selectedMembers = [];
+        renderMemberChips();
     }
 
     function closeBottomSheet() {
         document.getElementById('entryModal').style.display = 'none';
         document.getElementById('newIpoForm').reset();
-        document.getElementById('modalPan').value = '';
         document.getElementById('modalAmount').value = "15000";
+        document.getElementById('modalGmp').value = "";
+        selectedMembers = [];
     }
 
     document.getElementById('newIpoForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        if (selectedMembers.length === 0) {
+            alert('कृपया कम से कम 1 सदस्य का नाम चुनें!');
+            return;
+        }
+
         const now = new Date();
         const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
         const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-        const record = {
-            id: Date.now(),
-            dateTime: `${dateStr}, ${timeStr}`,
-            applicantName: document.getElementById('modalApplicant').value,
-            panNumber: document.getElementById('modalPan').value,
-            ipoName: document.getElementById('modalIpoName').value.trim(),
-            amount: document.getElementById('modalAmount').value.trim() || 15000,
-            paymentMethod: document.getElementById('modalPayment').value,
-            status: 'Applied',
-            doneDate: null,
-            pnl: 0
-        };
+        const ipoNameVal = document.getElementById('modalIpoName').value.trim();
+        const amountVal = document.getElementById('modalAmount').value.trim() || 15000;
+        const gmpVal = document.getElementById('modalGmp').value.trim() || 0;
+        const paymentVal = document.getElementById('modalPayment').value;
 
-        db[currentUser].unshift(record);
+        selectedMembers.forEach(member => {
+            const record = {
+                id: Date.now() + Math.random(),
+                dateTime: `${dateStr}, ${timeStr}`,
+                applicantName: member,
+                panNumber: panMap[member] || '',
+                ipoName: ipoNameVal,
+                amount: amountVal,
+                gmp: gmpVal,
+                paymentMethod: paymentVal,
+                status: 'Applied',
+                doneDate: null,
+                pnl: 0
+            };
+            db[currentUser].unshift(record);
+        });
+
         refreshApp();
         closeBottomSheet();
     });
 
     function saveDb() {
-        localStorage.setItem('ipo_db_ultra', JSON.stringify(db));
+        localStorage.setItem('ipo_db_ultra_gmp', JSON.stringify(db));
     }
 
     function exportToSmartPDF() {
